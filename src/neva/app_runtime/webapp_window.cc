@@ -680,6 +680,8 @@ void WebAppWindow::SetCustomCursor(CustomCursorType type,
                                    const std::string& path,
                                    int hotspot_x,
                                    int hotspot_y) {
+  if (!host_)
+    return;
   auto* wth(host_->AsWindowTreeHost());
   if (!wth)
     return;
