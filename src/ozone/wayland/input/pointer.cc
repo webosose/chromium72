@@ -19,6 +19,7 @@
 
 #include <linux/input.h>
 
+#include "base/logging.h"
 #include "ozone/wayland/input/cursor.h"
 #include "ozone/wayland/seat.h"
 #include "ozone/wayland/window.h"
@@ -80,6 +81,11 @@ void WaylandPointer::OnButtonNotify(void* data,
                                     uint32_t time,
                                     uint32_t button,
                                     uint32_t state) {
+  LOG(INFO) << __PRETTY_FUNCTION__
+            << ": key=" << ((button == BTN_LEFT) ? "Left" : "Other")
+            << ", type=" << ((state == WL_POINTER_BUTTON_STATE_PRESSED)
+                                 ? "Press"
+                                 : "Release");
   WaylandPointer* device = static_cast<WaylandPointer*>(data);
   WaylandDisplay::GetInstance()->SetSerial(serial);
   WaylandSeat* seat = WaylandDisplay::GetInstance()->PrimarySeat();
