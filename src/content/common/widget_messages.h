@@ -342,4 +342,9 @@ IPC_MESSAGE_ROUTED2(WidgetHostMsg_AnimateDoubleTapZoomInMainFrame,
                     gfx::Point /* tap point */,
                     gfx::Rect /* rect_to_zoom */)
 
+#if defined(USE_NEVA_APPRUNTIME)
+IPC_MESSAGE_ROUTED0(WidgetMsg_ActivateCompositor)
+IPC_MESSAGE_ROUTED0(WidgetMsg_DeactivateCompositor)
+#endif
+
 #endif  //  CONTENT_COMMON_WIDGET_MESSAGES_H_

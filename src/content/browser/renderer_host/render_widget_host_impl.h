@@ -723,6 +723,11 @@ class CONTENT_EXPORT RenderWidgetHostImpl
   // Marks all views in the frame tree as evicted.
   std::vector<viz::SurfaceId> CollectSurfaceIdsForEviction();
 
+#if defined(USE_NEVA_APPRUNTIME)
+  void ActivateRendererCompositor();
+  void DeactivateRendererCompositor();
+#endif
+
  protected:
   // ---------------------------------------------------------------------------
   // The following method is overridden by RenderViewHost to send upwards to
