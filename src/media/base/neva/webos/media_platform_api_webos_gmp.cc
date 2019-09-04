@@ -354,7 +354,7 @@ void MediaPlatformAPIWebOSGmp::SetPlaybackRate(float playback_rate) {
     current_playback_rate = 0.0f;
     playback_rate = 1.0;
   }
-  if (current_playback_rate == 0.0f && playback_rate != 0.0f) {
+  if (playback_rate > 0.0f) {
     FUNC_LOG(1) << " load_completed_=" << load_completed_;
     if (load_completed_)
       PlayInternal();
@@ -602,6 +602,7 @@ void MediaPlatformAPIWebOSGmp::PlayInternal() {
   FUNC_THIS_LOG(1);
 
   if (load_completed_) {
+    media_player_client_->SetPlaybackRate(playback_rate_);
     media_player_client_->Play();
     SetState(State::PLAYING);
   }
