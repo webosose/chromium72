@@ -276,8 +276,8 @@ void VideoRendererWebOS::Initialize(
                  weak_factory_.GetWeakPtr()));
 
   if (media_platform_api_) {
-    media_platform_api_->SetLoadCompletedCb(base::Bind(
-        &VideoRendererWebOS::OnLoaded_Locked, weak_factory_.GetWeakPtr()));
+    media_platform_api_->SetPlayerEventCb(base::Bind(
+        &VideoRendererWebOS::OnPlayerEvent_Locked, weak_factory_.GetWeakPtr()));
   }
 }
 
@@ -388,12 +388,14 @@ void VideoRendererWebOS::OnWaitingForDecryptionKey() {
   client_->OnWaitingForDecryptionKey();
 }
 
-void VideoRendererWebOS::OnLoaded_Locked() {
+void VideoRendererWebOS::OnPlayerEvent_Locked(
+    MediaPlatformAPI::PlayerEvent event) {
   DCHECK(task_runner_->BelongsToCurrentThread());
   base::AutoLock auto_lock(lock_);
 
   // Signal buffering state if we've met our conditions.
-  if (buffering_state_ == BUFFERING_HAVE_NOTHING && HaveEnoughData_Locked())
+  if (event == MediaPlatformAPI::PlayerEvent::kLoadCompleted &&
+      buffering_state_ == BUFFERING_HAVE_NOTHING && HaveEnoughData_Locked())
     TransitionToHaveEnough_Locked();
 }
 

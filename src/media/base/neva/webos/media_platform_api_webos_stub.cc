@@ -57,8 +57,6 @@ void MediaPlatformAPIWebOSStub::SetDisableAudio(bool disable) {}
 void MediaPlatformAPIWebOSStub::SetDisplayWindow(const gfx::Rect& rect,
                                                  const gfx::Rect& in_rect,
                                                  bool fullscreen) {}
-void MediaPlatformAPIWebOSStub::SetLoadCompletedCb(
-    const LoadCompletedCB& load_completed_cb) {}
 
 bool MediaPlatformAPIWebOSStub::Feed(const scoped_refptr<DecoderBuffer>& buffer,
                                      FeedType type) {
@@ -99,5 +97,9 @@ void MediaPlatformAPIWebOSStub::UpdateVideoConfig(
     const VideoDecoderConfig& video_config) {}
 
 void MediaPlatformAPIWebOSStub::SetVisibility(bool visible) {}
+
+bool MediaPlatformAPIWebOSStub::HaveEnoughData() {
+  return false;
+}
 
 }  // namespace media

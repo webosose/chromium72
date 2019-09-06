@@ -96,5 +96,8 @@ void MediaPlatformAPIStub::SwitchToAutoLayout() {}
 
 void MediaPlatformAPIStub::SetDisableAudio(bool disable) {}
 
+void MediaPlatformAPIStub::HaveEnoughData() {
+  return false;
+}
 
 }  // namespace media

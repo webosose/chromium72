@@ -68,7 +68,10 @@ config("config") {
   }
 
   if (use_neva_media) {
-    defines += [ "USE_NEVA_MEDIA=1" ]
+    defines += [
+      "USE_NEVA_MEDIA=1",
+      "USE_NEVA_MEDIA_EXTERNAL_RENDERER=1"
+    ]
   }
 
   if (enable_webm_audio_codecs) {

@@ -37,7 +37,6 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSStub : public MediaPlatformAPI {
   void SetDisplayWindow(const gfx::Rect& rect,
                         const gfx::Rect& in_rect,
                         bool fullscreen) override;
-  void SetLoadCompletedCb(const LoadCompletedCB& loaded_cb) override;
   bool Feed(const scoped_refptr<DecoderBuffer>& buffer, FeedType type) override;
   bool Seek(base::TimeDelta time) override;
   void Suspend(SuspendReason reason) override;
@@ -52,6 +51,7 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSStub : public MediaPlatformAPI {
   bool IsEOSReceived() override;
   void UpdateVideoConfig(const VideoDecoderConfig& video_config) override;
   void SetVisibility(bool visible) override;
+  bool HaveEnoughData() override;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(MediaPlatformAPIWebOSStub);

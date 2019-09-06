@@ -28,6 +28,9 @@
 #include "media/filters/neva/webos/audio_decoder_webos.h"
 #include "media/filters/neva/webos/video_decoder_webos.h"
 #include "media/renderers/audio_renderer_impl.h"
+#if defined(USE_NEVA_MEDIA_EXTERNAL_RENDERER)
+#include "media/renderers/neva/external_renderer.h"
+#endif
 #include "media/renderers/neva/webos/video_renderer_webos.h"
 #include "media/renderers/renderer_impl.h"
 #include "media/renderers/video_renderer_impl.h"
@@ -108,6 +111,23 @@ std::unique_ptr<Renderer> NevaMediaPlayerRendererFactory::CreateRenderer(
   DCHECK(audio_renderer_sink);
   DCHECK(media_platform_api_) << "WebOS Media API uninitialized";
 
+// NOTE(neva): Once external renderer is landed, we will remove all changed in
+// RendererImp and PipelineImpl with this directive.
+#if defined(USE_NEVA_MEDIA_EXTERNAL_RENDERER)
+  GpuVideoAcceleratorFactories* gpu_factories = nullptr;
+  if (!get_gpu_factories_cb_.is_null())
+    gpu_factories = get_gpu_factories_cb_.Run();
+
+  // Create ExternalRenderer.
+  std::unique_ptr<ExternalRenderer> renderer(new ExternalRenderer(
+      media_task_runner, media_platform_api_,
+      base::Bind(&NevaMediaPlayerRendererFactory::CreateAudioDecoders,
+                 base::Unretained(this), media_task_runner),
+      base::Bind(&NevaMediaPlayerRendererFactory::CreateVideoDecoders,
+                 base::Unretained(this), media_task_runner,
+                 request_overlay_info_cb, target_color_space, gpu_factories),
+      media_log_, NULL));
+#else
   std::unique_ptr<AudioRenderer> audio_renderer(new AudioRendererImpl(
       media_task_runner, audio_renderer_sink,
       // TODO(neva): Ensure following comment. From DefaultRendererFactory.
@@ -151,6 +171,7 @@ std::unique_ptr<Renderer> NevaMediaPlayerRendererFactory::CreateRenderer(
       media_task_runner, std::move(audio_renderer), std::move(video_renderer)));
 
   renderer->SetMediaPlatformAPI(media_platform_api_);
+#endif
 
   return std::move(renderer);
 }

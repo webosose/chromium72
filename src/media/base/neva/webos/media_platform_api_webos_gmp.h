@@ -85,8 +85,10 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
   void SetVisibility(bool visible) override;
 
   void ReInitializeIfNeeded() override {}
-  void SetLoadCompletedCb(const LoadCompletedCB& loaded_cb) override {}
   void SetDisableAudio(bool disable) override {}
+  bool HaveEnoughData() override;
+  void SetPlayerEventCb(const PlayerEventCB& callback) override;
+  void SetStatisticsCb(const StatisticsCB& cb) override;
   // End of MediaPlatformAPI
 
  private:
@@ -177,15 +179,15 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
 
   std::recursive_mutex recursive_mutex_;
 
-  State state_;
+  State state_ = State::INVALID;
 
   base::TimeDelta feeded_audio_pts_ = kNoTimestamp;
   base::TimeDelta feeded_video_pts_ = kNoTimestamp;
 
-  int64_t audio_eos_received_;
-  int64_t video_eos_received_;
-  double playback_volume_;
-  bool received_eos_;
+  int64_t audio_eos_received_ = false;
+  int64_t video_eos_received_ = false;
+  double playback_volume_ = 1.0;
+  bool received_eos_ = false;
 
   // class BufferQueue;
   std::unique_ptr<BufferQueue> buffer_queue_;
@@ -193,22 +195,24 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
   gfx::Rect window_rect_;
   gfx::Rect window_in_rect_;
 
-  float playback_rate_;
+  float playback_rate_ = 0.0f;
 
   AudioDecoderConfig audio_config_;
   VideoDecoderConfig video_config_;
 
-  bool play_internal_;
-  bool released_media_resource_;
-  bool is_destructed_;
-  bool is_suspended_;
-  bool load_completed_;
-  bool is_finalized_;
+  bool play_internal_ = false;
+  bool released_media_resource_ = false;
+  bool is_destructed_ = false;
+  bool is_suspended_ = false;
+  bool load_completed_ = false;
+  bool is_finalized_ = false;
 
   base::TimeDelta resume_time_;
   struct PendingSetDisplayWindow pending_set_display_window_;
 
   std::unique_ptr<gmp::player::MediaPlayerClient> media_player_client_;
+  PlayerEventCB player_event_cb_;
+  StatisticsCB statistics_cb_;
 
   DISALLOW_COPY_AND_ASSIGN(MediaPlatformAPIWebOSGmp);
 };

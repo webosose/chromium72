@@ -20,6 +20,8 @@
 #include <queue>
 #include <set>
 #include "base/optional.h"
+#include "base/synchronization/condition_variable.h"
+#include "base/synchronization/lock.h"
 #include "media/base/audio_decoder_config.h"
 #include "media/base/decoder_buffer.h"
 #include "media/base/neva/media_constants.h"
@@ -45,7 +47,15 @@ class MEDIA_EXPORT MediaPlatformAPI
     Audio,
   };
 
-  using LoadCompletedCB = base::Callback<void()>;
+  enum class PlayerEvent {
+    kLoadCompleted = 0,
+    kSeekDone,
+    kNeedData,
+    kBufferLow,
+    kBufferFull,
+  };
+
+  using PlayerEventCB = base::Callback<void(PlayerEvent)>;
 
   enum RestorePlaybackMode { RESTORE_PAUSED, RESTORE_PLAYING };
 
@@ -75,7 +85,6 @@ class MEDIA_EXPORT MediaPlatformAPI
   virtual void SetDisplayWindow(const gfx::Rect& rect,
                                 const gfx::Rect& in_rect,
                                 bool fullscreen) = 0;
-  virtual void SetLoadCompletedCb(const LoadCompletedCB& loaded_cb) = 0;
   virtual bool Feed(const scoped_refptr<DecoderBuffer>& buffer,
                     FeedType type) = 0;
   virtual bool Seek(base::TimeDelta time) = 0;
@@ -95,8 +104,11 @@ class MEDIA_EXPORT MediaPlatformAPI
 
   virtual void SwitchToAutoLayout() = 0;
   virtual void SetDisableAudio(bool disable) = 0;
-
+  virtual bool HaveEnoughData() = 0;
   base::TimeDelta GetCurrentTime();
+
+  virtual void SetPlayerEventCb(const PlayerEventCB& cb) {}
+  virtual void SetStatisticsCb(const StatisticsCB& cb) {}
 
   static base::Optional<MediaTypeRestriction> GetPlatformRestrictionForType(
       const std::string& type);

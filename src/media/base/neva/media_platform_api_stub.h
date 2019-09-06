@@ -52,7 +52,7 @@ class MEDIA_EXPORT MediaPlatformAPIStub : public MediaPlatformAPI {
 
   void SwitchToAutoLayout() override;
   void SetDisableAudio(bool disable) override;
-
+  bool HaveEnoughData() override;
 
  private:
   ~MediaPlatformAPIStub() override;

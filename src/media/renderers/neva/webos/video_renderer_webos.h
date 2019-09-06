@@ -117,7 +117,7 @@ class MEDIA_EXPORT VideoRendererWebOS
   void OnWaitingForDecryptionKey();
 
   // Called by the VideoDecoderStream when a config change occurs. Will notify
-  void OnLoaded_Locked();
+  void OnPlayerEvent_Locked(MediaPlatformAPI::PlayerEvent e);
 
   // RenderClient of the new config.
   void OnConfigChange(const VideoDecoderConfig& config);

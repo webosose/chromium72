@@ -34,6 +34,8 @@ source_set("neva") {
   visibility = [ "//media/renderers" ]
 
   sources = [
+    "external_renderer.h",
+    "external_renderer.cc",
     "neva_media_player_renderer_factory.h",
     "neva_media_player_renderer_factory_stub.cc",
   ]

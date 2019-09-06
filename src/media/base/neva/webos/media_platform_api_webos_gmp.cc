@@ -151,19 +151,7 @@ MediaPlatformAPIWebOSGmp::MediaPlatformAPIWebOSGmp(
       resume_done_cb_(resume_done_cb),
       suspend_done_cb_(suspend_done_cb),
       active_region_cb_(active_region_cb),
-      error_cb_(error_cb),
-      state_(State::INVALID),
-      audio_eos_received_(false),
-      video_eos_received_(false),
-      playback_volume_(1.0),
-      received_eos_(false),
-      playback_rate_(0.0f),
-      play_internal_(false),
-      released_media_resource_(false),
-      is_destructed_(false),
-      is_suspended_(false),
-      load_completed_(false),
-      is_finalized_(false) {
+      error_cb_(error_cb) {
   FUNC_THIS_LOG(1);
 
   media_player_client_.reset(new gmp::player::MediaPlayerClient(app_id));
@@ -437,9 +425,36 @@ void MediaPlatformAPIWebOSGmp::SetVisibility(bool visible) {
     SetDisplayWindow(gfx::Rect(0, 0, 1, 1), gfx::Rect(0, 0, 1, 1), false);
 }
 
+bool MediaPlatformAPIWebOSGmp::HaveEnoughData() {
+  bool has_audio = audio_config_.IsValidConfig();
+  bool has_video = video_config_.IsValidConfig();
+
+  base::TimeDelta enough_size = has_video
+                                    ? base::TimeDelta::FromMilliseconds(3000)
+                                    : base::TimeDelta::FromMilliseconds(500);
+
+  if (state_ == State::SEEKING || !load_completed_)
+    return false;
+
+  base::TimeDelta current_time = GetCurrentTime();
+
+  if (has_audio && feeded_audio_pts_ - current_time < enough_size)
+    return false;
+  if (has_video && feeded_video_pts_ - current_time < enough_size)
+    return false;
+  return true;
+}
+
+void MediaPlatformAPIWebOSGmp::SetPlayerEventCb(const PlayerEventCB& callback) {
+  player_event_cb_ = callback;
+}
+
+void MediaPlatformAPIWebOSGmp::SetStatisticsCb(const StatisticsCB& cb) {
+  statistics_cb_ = cb;
+}
+
 bool MediaPlatformAPIWebOSGmp::AllowedFeedVideo() {
   std::lock_guard<std::recursive_mutex> lock(recursive_mutex_);
-
   if (!video_config_.IsValidConfig() || !IsFeedableState())
     return false;
 
@@ -456,7 +471,6 @@ bool MediaPlatformAPIWebOSGmp::AllowedFeedVideo() {
 
 bool MediaPlatformAPIWebOSGmp::AllowedFeedAudio() {
   std::lock_guard<std::recursive_mutex> lock(recursive_mutex_);
-
   if (!audio_config_.IsValidConfig() || !IsFeedableState())
     return false;
 
@@ -557,6 +571,8 @@ void MediaPlatformAPIWebOSGmp::DispatchCallback(const gint type,
   switch (static_cast<NOTIFY_TYPE_T>(type)) {
     case NOTIFY_LOAD_COMPLETED:
       NotifyLoadComplete();
+      if (player_event_cb_)
+        player_event_cb_.Run(PlayerEvent::kLoadCompleted);
       break;
     case NOTIFY_END_OF_STREAM:
       LOG(INFO) << "[" << this << "] " << __func__ << " NOTIFY_END_OF_STREAM";
@@ -573,6 +589,8 @@ void MediaPlatformAPIWebOSGmp::DispatchCallback(const gint type,
         PlayInternal();
       else
         SetState(State::PLAYING);
+      if (player_event_cb_)
+        player_event_cb_.Run(PlayerEvent::kSeekDone);
       break;
     }
     case NOTIFY_UNLOAD_COMPLETED:
@@ -694,6 +712,7 @@ MediaPlatformAPIWebOSGmp::FeedStatus MediaPlatformAPIWebOSGmp::FeedInternal(
     feeded_audio_pts_ = buffer->timestamp();
   else
     feeded_video_pts_ = buffer->timestamp();
+
   return kFeedSucceeded;
 }
 
