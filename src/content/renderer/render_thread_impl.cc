@@ -1002,7 +1002,7 @@ void RenderThreadImpl::Init() {
         std::move(watcher_ptr));
   }
 
-#if defined(USE_NEVA_MEDIA)
+#if defined(USE_NEVA_MEDIA) || defined(USE_NEVA_SUSPEND_MEDIA_CAPTURE)
   neva::RenderThreadImpl<RenderThreadImpl>::Init();
 #endif
 }  // namespace content
