@@ -2538,6 +2538,15 @@ gfx::Size RenderWidgetHostViewAura::GetCompositorViewportPixelSize() const {
   return gfx::ScaleToCeiledSize(GetRequestedRendererSize(),
                                 GetDeviceScaleFactor() * window_scale_ratio_);
 }
+
+gfx::Rect RenderWidgetHostViewAura::GetTextInputBounds() const {
+  if (!text_input_manager_ || !text_input_manager_->GetActiveWidget())
+    return gfx::Rect();
+
+  const TextInputState* state = text_input_manager_->GetTextInputState();
+
+  return ConvertRectToScreen(state->bounds);
+}
 #endif
 
 void RenderWidgetHostViewAura::OnSelectionBoundsChanged(
