@@ -105,4 +105,14 @@ void MediaPlatformAPI::SetMediaCodecCapability(const std::string& codec_info) {
   }
 }
 
+base::TimeDelta MediaPlatformAPI::GetCurrentTime() {
+  base::AutoLock auto_lock(current_time_lock_);
+  return current_time_;
+}
+
+void MediaPlatformAPI::UpdateCurrentTime(const base::TimeDelta& time) {
+  base::AutoLock auto_lock(current_time_lock_);
+  current_time_ = time;
+}
+
 }  // namespace media

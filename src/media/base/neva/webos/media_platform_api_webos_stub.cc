@@ -100,8 +100,4 @@ void MediaPlatformAPIWebOSStub::UpdateVideoConfig(
 
 void MediaPlatformAPIWebOSStub::SetVisibility(bool visible) {}
 
-uint64_t MediaPlatformAPIWebOSStub::GetCurrentTime() {
-  return 0;
-}
-
 }  // namespace media

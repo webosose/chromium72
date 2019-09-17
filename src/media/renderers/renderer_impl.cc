@@ -288,8 +288,7 @@ base::TimeDelta RendererImpl::GetMediaTime() {
   }
 #if defined(USE_NEVA_MEDIA)
   if (media_platform_api_)
-    return base::TimeDelta::FromMilliseconds(
-        media_platform_api_->GetCurrentTime());
+    return media_platform_api_->GetCurrentTime();
 #endif
   return time_source_->CurrentMediaTime();
 }

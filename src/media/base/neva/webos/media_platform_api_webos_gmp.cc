@@ -153,13 +153,10 @@ MediaPlatformAPIWebOSGmp::MediaPlatformAPIWebOSGmp(
       active_region_cb_(active_region_cb),
       error_cb_(error_cb),
       state_(State::INVALID),
-      feeded_audio_pts_(-1),
-      feeded_video_pts_(-1),
       audio_eos_received_(false),
       video_eos_received_(false),
       playback_volume_(1.0),
       received_eos_(false),
-      current_time_(0),
       playback_rate_(0.0f),
       play_internal_(false),
       released_media_resource_(false),
@@ -316,6 +313,7 @@ bool MediaPlatformAPIWebOSGmp::Seek(base::TimeDelta time) {
     return true;
 
   ResetFeedInfo();
+  UpdateCurrentTime(time);
 
   if (!load_completed_) {
     // clear incompletely loaded pipeline
@@ -441,18 +439,33 @@ void MediaPlatformAPIWebOSGmp::SetVisibility(bool visible) {
 
 bool MediaPlatformAPIWebOSGmp::AllowedFeedVideo() {
   std::lock_guard<std::recursive_mutex> lock(recursive_mutex_);
-  return video_config_.IsValidConfig() && state_ == State::PLAYING &&
-         buffer_queue_->Empty() &&
-         (audio_config_.IsValidConfig()
-              ?  // preventing video overrun
-              feeded_video_pts_ - feeded_audio_pts_ < 1000000000
-              : feeded_video_pts_ - current_time_ < 3000000000);
+
+  if (!video_config_.IsValidConfig() || !IsFeedableState())
+    return false;
+
+  if (feeded_audio_pts_ == kNoTimestamp)
+    return true;
+
+  base::TimeDelta video_audio_delta = feeded_video_pts_ - feeded_audio_pts_;
+  base::TimeDelta buffered_video_time = feeded_video_pts_ - GetCurrentTime();
+
+  return audio_config_.IsValidConfig()
+             ? video_audio_delta < base::TimeDelta::FromSeconds(1)
+             : buffered_video_time < base::TimeDelta::FromSeconds(5);
 }
 
 bool MediaPlatformAPIWebOSGmp::AllowedFeedAudio() {
   std::lock_guard<std::recursive_mutex> lock(recursive_mutex_);
-  return audio_config_.IsValidConfig() && state_ == State::PLAYING &&
-         buffer_queue_->Empty();
+
+  if (!audio_config_.IsValidConfig() || !IsFeedableState())
+    return false;
+
+  if (feeded_video_pts_ == kNoTimestamp)
+    return true;
+
+  base::TimeDelta buffered_audio_time = feeded_audio_pts_ - GetCurrentTime();
+
+  return buffered_audio_time < base::TimeDelta::FromSeconds(5);
 }
 
 void MediaPlatformAPIWebOSGmp::Finalize() {
@@ -551,7 +564,7 @@ void MediaPlatformAPIWebOSGmp::DispatchCallback(const gint type,
       break;
     case NOTIFY_CURRENT_TIME:
       if (state_ != State::SEEKING)
-        UpdateCurrentTime(num_value);
+        UpdateCurrentTime(base::TimeDelta::FromMilliseconds(num_value));
       break;
     case NOTIFY_SEEK_DONE: {
       LOG(INFO) << "[" << this << "] " << __func__
@@ -678,10 +691,9 @@ MediaPlatformAPIWebOSGmp::FeedStatus MediaPlatformAPIWebOSGmp::FeedInternal(
   }
 
   if (type == Audio)
-    feeded_audio_pts_ = pts;
+    feeded_audio_pts_ = buffer->timestamp();
   else
-    feeded_video_pts_ = pts;
-
+    feeded_video_pts_ = buffer->timestamp();
   return kFeedSucceeded;
 }
 
@@ -696,22 +708,13 @@ void MediaPlatformAPIWebOSGmp::PushEOS() {
 }
 
 void MediaPlatformAPIWebOSGmp::ResetFeedInfo() {
-  feeded_audio_pts_ = -1;
-  feeded_video_pts_ = -1;
+  feeded_audio_pts_ = kNoTimestamp;
+  feeded_video_pts_ = kNoTimestamp;
   audio_eos_received_ = !audio_config_.IsValidConfig();
   video_eos_received_ = !video_config_.IsValidConfig();
   received_eos_ = false;
 
   buffer_queue_->Clear();
-}
-
-void MediaPlatformAPIWebOSGmp::UpdateCurrentTime(int64_t time) {
-  FUNC_THIS_LOG(2) << " time=" << time;
-  current_time_ = time;
-}
-
-uint64_t MediaPlatformAPIWebOSGmp::GetCurrentTime() {
-  return current_time_;
 }
 
 void MediaPlatformAPIWebOSGmp::SetMediaVideoData(
@@ -869,6 +872,17 @@ const char* MediaPlatformAPIWebOSGmp::StateToString(State s) {
   if (s > State::FINALIZED)
     return "INVALID";
   return state_string[static_cast<int>(s)];
+}
+
+bool MediaPlatformAPIWebOSGmp::IsFeedableState() const {
+  DCHECK(media_task_runner_->BelongsToCurrentThread());
+  switch (state_) {
+    case State::INVALID:
+    case State::FINALIZED:
+      return false;
+    default:
+      return true;
+  }
 }
 
 }  // namespace media

@@ -96,7 +96,7 @@ class MEDIA_EXPORT MediaPlatformAPI
   virtual void SwitchToAutoLayout() = 0;
   virtual void SetDisableAudio(bool disable) = 0;
 
-  virtual uint64_t GetCurrentTime() = 0;
+  base::TimeDelta GetCurrentTime();
 
   static base::Optional<MediaTypeRestriction> GetPlatformRestrictionForType(
       const std::string& type);
@@ -105,6 +105,7 @@ class MEDIA_EXPORT MediaPlatformAPI
 
  protected:
   virtual ~MediaPlatformAPI();
+  void UpdateCurrentTime(const base::TimeDelta& time);
 
   class BufferQueue {
    public:
@@ -132,6 +133,10 @@ class MEDIA_EXPORT MediaPlatformAPI
 
  private:
   friend class base::RefCountedThreadSafe<MediaPlatformAPI>;
+
+  base::TimeDelta current_time_;
+  // Used access current_time_
+  base::Lock current_time_lock_;
 
   static Json::Value& supported_codec_;
 

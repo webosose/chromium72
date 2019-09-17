@@ -96,8 +96,5 @@ void MediaPlatformAPIStub::SwitchToAutoLayout() {}
 
 void MediaPlatformAPIStub::SetDisableAudio(bool disable) {}
 
-uint64_t MediaPlatformAPIStub::GetCurrentTime() {
-  return 0;
-}
 
 }  // namespace media

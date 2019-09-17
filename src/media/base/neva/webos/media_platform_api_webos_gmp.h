@@ -84,8 +84,6 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
 
   void SetVisibility(bool visible) override;
 
-  uint64_t GetCurrentTime() override;
-
   void ReInitializeIfNeeded() override {}
   void SetLoadCompletedCb(const LoadCompletedCB& loaded_cb) override {}
   void SetDisableAudio(bool disable) override {}
@@ -144,7 +142,6 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
   bool HasResources();
   bool IsSuspended();
 
-  void UpdateCurrentTime(int64_t time);
   void ResetFeedInfo();
 
   void SetMediaVideoData(const std::string& video_info);
@@ -158,6 +155,8 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
   std::string GetMediaID();
   bool IsReleasedMediaResource();
   void Unload();
+
+  bool IsFeedableState() const;
 
   base::LunaServiceClient ls_client_;
   scoped_refptr<base::SingleThreadTaskRunner> main_task_runner_;
@@ -180,8 +179,9 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
 
   State state_;
 
-  int64_t feeded_audio_pts_;
-  int64_t feeded_video_pts_;
+  base::TimeDelta feeded_audio_pts_ = kNoTimestamp;
+  base::TimeDelta feeded_video_pts_ = kNoTimestamp;
+
   int64_t audio_eos_received_;
   int64_t video_eos_received_;
   double playback_volume_;
@@ -190,7 +190,6 @@ class MEDIA_EXPORT MediaPlatformAPIWebOSGmp : public MediaPlatformAPI {
   // class BufferQueue;
   std::unique_ptr<BufferQueue> buffer_queue_;
 
-  int64_t current_time_;
   gfx::Rect window_rect_;
   gfx::Rect window_in_rect_;
 

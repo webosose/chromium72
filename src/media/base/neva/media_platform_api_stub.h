@@ -53,7 +53,6 @@ class MEDIA_EXPORT MediaPlatformAPIStub : public MediaPlatformAPI {
   void SwitchToAutoLayout() override;
   void SetDisableAudio(bool disable) override;
 
-  uint64_t GetCurrentTime() override;
 
  private:
   ~MediaPlatformAPIStub() override;
