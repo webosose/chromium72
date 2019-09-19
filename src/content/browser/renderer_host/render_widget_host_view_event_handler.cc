@@ -691,18 +691,15 @@ void RenderWidgetHostViewEventHandler::FinishImeCompositionSession() {
     if (input_state &&
         input_state->composition_start >= 0 &&
         input_state->composition_end >= 0) {
-      gfx::Range r;
-      host_view_->GetTextInputClient()->GetSelectionRange(&r);
-
-      base::string16 comp_char = base::UTF8ToUTF16(input_state->value);
-      base::string16::size_type comp_char_size = comp_char.length();
-      uint32_t range_start = r.start();
-
-      if (comp_char_size > 0 && comp_char_size >= range_start) {
-        comp_char = comp_char.substr(range_start, r.length() + 1);
+      base::string16 composition_str = base::UTF8ToUTF16(input_state->value);
+      if (composition_str.length() > 0 &&
+          input_state->composition_end > input_state->composition_start) {
+        composition_str = composition_str.substr(
+            input_state->composition_start,
+            input_state->composition_end - input_state->composition_start);
 
         host_view_->ImeCancelComposition();
-        host_view_->GetTextInputClient()->InsertText(comp_char);
+        host_view_->GetTextInputClient()->InsertText(composition_str);
         return;
       }
     }
