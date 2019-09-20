@@ -1,5 +1,5 @@
 // Copyright 2013 Intel Corporation. All rights reserved.
-// Copyright 2017-2018 LG Electronics, Inc.
+// Copyright 2017-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@
 #include "ui/gfx/ipc/geometry/gfx_param_traits.h"
 #include "ui/gfx/ipc/gfx_param_traits.h"
 #include "ui/gfx/ipc/skia/gfx_skia_param_traits.h"
+#include "ui/gfx/location_hint.h"
 #include "ui/platform_window/neva/window_group_configuration.h"
 #include "ui/platform_window/neva/window_group_configuration_param_traits.h"
 #include "ui/platform_window/neva/xinput_types.h"
@@ -57,6 +58,7 @@ IPC_ENUM_TRAITS_MAX_VALUE(ui::KeyMask,
                           ui::KeyMask::kDefault)
 IPC_ENUM_TRAITS_MAX_VALUE(ui::XInputKeySymbolType, ui::XINPUT_NATIVE_KEY_SYMBOL)
 IPC_ENUM_TRAITS_MAX_VALUE(ui::XInputEventType, ui::XINPUT_RELEASE)
+IPC_ENUM_TRAITS_MAX_VALUE(gfx::LocationHint, gfx::LocationHint::kCenter)
 
 //------------------------------------------------------------------------------
 // Browser Messages
@@ -287,6 +289,11 @@ IPC_MESSAGE_CONTROL2(WaylandDisplay_DragWillBeAccepted,  // NOLINT(readability/
 
 IPC_MESSAGE_CONTROL1(WaylandDisplay_DragWillBeRejected,  // NOLINT(readability/
                      uint32_t /* serial */)              //        fn_size)
+
+IPC_MESSAGE_CONTROL2(
+    WaylandDisplay_SetLocationHint,  // NOLINT(readability/fn_size)
+    unsigned /*handle*/,
+    gfx::LocationHint /*value*/)
 
 IPC_MESSAGE_CONTROL3(
     WaylandDisplay_SetWindowProperty,  // NOLINT(readability/fn_size)

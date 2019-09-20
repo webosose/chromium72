@@ -1,4 +1,4 @@
-// Copyright 2017-2018 LG Electronics, Inc.
+// Copyright 2017-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #include "ui/base/ime/neva/input_method_common.h"
 #include "ui/base/ime/text_input_type.h"
 #include "ui/gfx/geometry/rect.h"
+#include "ui/gfx/location_hint.h"
 #include "ui/gfx/native_widget_types.h"
 #include "ui/platform_window/neva/window_group_configuration.h"
 #include "ui/platform_window/neva/xinput_types.h"
@@ -72,6 +73,7 @@ class WaylandPlatformWindow {
   virtual void SetKeyMask(KeyMask key_mask, bool set) {}
   virtual void SetWindowProperty(const std::string& name,
                                  const std::string& value) {}
+  virtual void SetLocationHint(gfx::LocationHint value) {}
   virtual void ShowInputPanel() {}
   virtual void HideInputPanel(ImeHiddenType) {}
   virtual void SetInputContentType(ui::TextInputType text_input_type, int text_input_flags) {}

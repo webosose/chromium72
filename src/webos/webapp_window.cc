@@ -23,7 +23,7 @@
 namespace webos {
 
 WebAppWindow::WebAppWindow(
-    const app_runtime::WebAppWindowBase::CreateParams& params)
+    const app_runtime::WebAppWindow::CreateParams& params)
     : app_runtime::WebAppWindow(params, nullptr) {
   SetDeferredDeleting(true);
 }

@@ -1,4 +1,4 @@
-// Copyright 2016-2018 LG Electronics, Inc.
+// Copyright 2016-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,6 +39,19 @@ class WindowGroupConfiguration;
 
 class WEBOS_EXPORT WebAppWindowBase : public WebAppWindowDelegate {
  public:
+  enum class LocationHint {
+    kUnknown,
+    kNorth,
+    kWest,
+    kSouth,
+    kEast,
+    kCenter,
+    kNorthWest,
+    kNorthEast,
+    kSouthWest,
+    kSouthEast,
+  };
+
   WebAppWindowBase();
   virtual ~WebAppWindowBase();
 
@@ -64,6 +77,7 @@ class WEBOS_EXPORT WebAppWindowBase : public WebAppWindowDelegate {
   void SetKeyMask(WebOSKeyMask key_mask);
   void SetKeyMask(WebOSKeyMask key_mask, bool set);
   void SetWindowProperty(const std::string& name, const std::string& value);
+  void SetLocationHint(LocationHint value);
   void SetOpacity(float opacity);
   void Resize(int width, int height);
   bool IsKeyboardVisible();
