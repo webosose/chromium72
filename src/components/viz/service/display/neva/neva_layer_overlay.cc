@@ -159,10 +159,17 @@ QuadList::Iterator NevaLayerOverlayProcessor::ProcessRenderPassDrawQuad(
       pass_punch_through_rects_[rpdq->render_pass_id];
   const SharedQuadState* original_shared_quad_state = rpdq->shared_quad_state;
 
+  // Copy shared state from RPDQ to get the same clip rect.
+  SharedQuadState* new_shared_quad_state =
+      render_pass->shared_quad_state_list.AllocateAndCopyFrom<SharedQuadState>(
+          original_shared_quad_state);
+
   bool should_blend =
       rpdq->ShouldDrawWithBlending() &&
       original_shared_quad_state->blend_mode == SkBlendMode::kSrcOver &&
       original_shared_quad_state->opacity < 1.f;
+
+  gfx::Rect visible_rect = rpdq->visible_rect;
 
   // The iterator was advanced above so InsertBefore inserts after the RPDQ.
   it = render_pass->quad_list
@@ -170,20 +177,19 @@ QuadList::Iterator NevaLayerOverlayProcessor::ProcessRenderPassDrawQuad(
                it, punch_through_rects.size());
   rpdq = nullptr;
   for (const gfx::Rect& punch_through_rect : punch_through_rects) {
-    // Copy shared state from RPDQ to get the same clip rect.
-    SharedQuadState* new_shared_quad_state =
-        render_pass->shared_quad_state_list
-            .AllocateAndCopyFrom<SharedQuadState>(original_shared_quad_state);
-
     SkBlendMode new_blend_mode = should_blend
                                      ? SkBlendMode::kDstOut
                                      : original_shared_quad_state->blend_mode;
     new_shared_quad_state->blend_mode = new_blend_mode;
 
+    gfx::Rect clipped_punch_through_rect = punch_through_rect;
+    clipped_punch_through_rect.Intersect(visible_rect);
+
     auto* solid_quad = static_cast<SolidColorDrawQuad*>(*it++);
-    solid_quad->SetAll(
-        new_shared_quad_state, punch_through_rect, punch_through_rect, false,
-        should_blend ? SK_ColorBLACK : SK_ColorTRANSPARENT, true);
+    solid_quad->SetAll(new_shared_quad_state, clipped_punch_through_rect,
+                       clipped_punch_through_rect, false,
+                       should_blend ? SK_ColorBLACK : SK_ColorTRANSPARENT,
+                       true);
 
     gfx::Rect clipped_quad_rect =
         gfx::ToEnclosingRect(ClippedQuadRectangle(solid_quad));
@@ -195,7 +201,7 @@ QuadList::Iterator NevaLayerOverlayProcessor::ProcessRenderPassDrawQuad(
 
     // Add transformed info to list in case this renderpass is included in
     // another pass.
-    pass_punch_through_rects_[render_pass->id].push_back(clipped_quad_rect);
+    AddPunchThroughRectIfNeeded(render_pass->id, clipped_quad_rect);
   }
   return it;
 }
