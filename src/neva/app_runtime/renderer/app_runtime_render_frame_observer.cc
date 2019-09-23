@@ -80,6 +80,7 @@ void AppRuntimeRenderFrameObserver::ResumeDOM() {
   dom_suspended_ = false;
 
   render_frame()->GetRenderView()->GetWebView()->DidExitModalLoop();
+  render_frame()->GetRenderView()->GetWebFrameWidget()->SetFocus(true);
 }
 
 void AppRuntimeRenderFrameObserver::ResetStateToMarkNextPaintForContainer() {
