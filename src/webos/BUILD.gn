@@ -137,11 +137,13 @@ repack_locales("repack") {
   visibility = [ ":resources" ]
   source_patterns = [
     "${root_gen_dir}/webos/webos_network_error_strings_",
-    "${root_gen_dir}/neva/app_runtime/locales/"
+    "${root_gen_dir}/neva/app_runtime/locales/",
+    "${root_gen_dir}/components/strings/accessibility_strings_",
   ]
 
   deps = [
     ":webos_network_error_strings_grit",
+    "//components/strings:accessibility_strings_webos",
     "//neva/app_runtime:app_runtime_network_error_strings_grit",
   ]
 
