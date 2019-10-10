@@ -87,14 +87,14 @@ declare_args() {
 
   # Use v8 snapshot feature
   use_neva_v8_snapshot = false
+
+  # Enable optimizations to reduce writes to eMMC storages
+  enable_emmc_optimizations = false
 }
 
 declare_args() {
   # Suspend capturing audio/video when tab or app is suspended
   use_neva_suspend_media_capture = is_webos
-
-  # Enable optimizations to reduce writes to eMMC storages
-  enable_emmc_optimizations = is_webos
 
   # Enable network error page controller WEBAPI
   enable_network_error_page_controller_webapi = is_webos
