@@ -210,6 +210,8 @@ class CORE_EXPORT WebSettingsImpl final : public WebSettingsImplNeva {
 #endif
 #if defined(USE_NEVA_APPRUNTIME)
   void SetDisallowScrollbarsInMainFrame(bool) override;
+  void SetAllowLocalResourceLoad(bool) override;
+  bool GetAllowLocalResourceLoad() const override;
 #endif
   void SetLowPriorityIframesThreshold(WebEffectiveConnectionType) override;
 

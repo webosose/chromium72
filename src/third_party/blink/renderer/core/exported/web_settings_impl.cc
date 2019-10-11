@@ -724,6 +724,14 @@ void WebSettingsImpl::SetMaxTimeupdateEventFrequency(int time) {
 void WebSettingsImpl::SetDisallowScrollbarsInMainFrame(bool disallow) {
   settings_->SetDisallowScrollbarsInMainFrame(disallow);
 }
+
+void WebSettingsImpl::SetAllowLocalResourceLoad(bool allow) {
+  settings_->SetAllowLocalResourceLoad(allow);
+}
+
+bool WebSettingsImpl::GetAllowLocalResourceLoad() const {
+  return settings_->GetAllowLocalResourceLoad();
+}
 #endif
 
 void WebSettingsImpl::SetLowPriorityIframesThreshold(

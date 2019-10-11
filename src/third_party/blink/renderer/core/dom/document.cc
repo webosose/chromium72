@@ -6465,6 +6465,8 @@ void Document::InitSecurityContext(const DocumentInit& initializer) {
         GetMutableSecurityOrigin()->BlockLocalAccessFromLocalOrigin();
       }
     }
+    if (settings->GetAllowLocalResourceLoad())
+      GetMutableSecurityOrigin()->GrantLoadLocalResources();
   }
 
   if (GetSecurityOrigin()->IsOpaque() &&

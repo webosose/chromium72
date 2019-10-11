@@ -1098,6 +1098,7 @@ void RenderView::ApplyWebPreferences(const WebPreferences& prefs,
   WebRuntimeFeatures::EnableTranslateService(prefs.translate_service_available);
 
 #if defined(USE_NEVA_APPRUNTIME)
+  settings->SetAllowLocalResourceLoad(prefs.allow_local_resource_load);
   settings->SetBackHistoryAPIEnabled(!prefs.back_history_api_disabled);
   settings->SetKeepAliveWebApp(prefs.keep_alive_webapp);
   settings->SetGpuRasterizationAllowed(prefs.gpu_rasterization_allowed);
