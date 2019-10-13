@@ -46,6 +46,7 @@ WindowManagerWayland::WindowManagerWayland(OzoneGpuPlatformSupportHost* proxy)
                            base::Unretained(this)))),
       platform_screen_(NULL),
       dragging_(false),
+      touch_slot_generator_(0),
       weak_ptr_factory_(this) {
   proxy_->RegisterHandler(this);
 }
@@ -593,12 +594,16 @@ void WindowManagerWayland::NotifyTouchEvent(EventType type,
                                             int32_t touch_id,
                                             uint32_t time_stamp) {
   gfx::Point position(x, y);
-  base::TimeTicks timestamp = ui::EventTimeForNow() + base::TimeDelta::FromMilliseconds(time_stamp);
-  TouchEvent touchev(type,
-                     position,
-                     timestamp,
-                     ui::PointerDetails(ui::EventPointerType::POINTER_TYPE_TOUCH, touch_id));
+  base::TimeTicks timestamp =
+      base::TimeTicks() + base::TimeDelta::FromMilliseconds(time_stamp);
+  uint32_t touch_slot = touch_slot_generator_.GetGeneratedID(touch_id);
+  TouchEvent touchev(
+      type, position, timestamp,
+      ui::PointerDetails(ui::EventPointerType::POINTER_TYPE_TOUCH, touch_slot));
   DispatchEvent(&touchev);
+
+  if (type == ET_TOUCH_RELEASED || type == ET_TOUCH_CANCELLED)
+    touch_slot_generator_.ReleaseNumber(touch_id);
 }
 
 void WindowManagerWayland::NotifyScreenChanged(unsigned width,
