@@ -251,6 +251,12 @@ void WindowEventDispatcher::OnHostLostMouseGrab() {
   mouse_moved_handler_ = NULL;
 }
 
+#if defined(OS_WEBOS)
+void WindowEventDispatcher::OnHostLostMouseVisibility() {
+  mouse_moved_handler_ = nullptr;
+}
+#endif  // defined(OS_WEBOS)
+
 void WindowEventDispatcher::OnCursorMovedToRootLocation(
     const gfx::Point& root_location) {
   host_->window()->env()->env_controller()->SetLastMouseLocation(window(),

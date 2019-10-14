@@ -129,6 +129,9 @@ class AURA_EXPORT WindowEventDispatcher : public ui::EventProcessor,
 
   void OnHostLostMouseGrab();
   void OnCursorMovedToRootLocation(const gfx::Point& root_location);
+#if defined(OS_WEBOS)
+  void OnHostLostMouseVisibility();
+#endif
 
   // TODO(beng): This is only needed because this cleanup needs to happen after
   //             all other observers are notified of OnWindowDestroying() but

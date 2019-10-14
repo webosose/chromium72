@@ -904,6 +904,14 @@ void DesktopWindowTreeHostOzone::MoveCursorToScreenLocationInPixels(
 void DesktopWindowTreeHostOzone::OnCursorVisibilityChangedNative(bool show) {
   // TODO(erg): Conditional on us enabling touch on desktop linux builds, do
   // the same tap-to-click disabling here that chromeos does.
+#if defined(OS_WEBOS)
+  // By default chromium will only emit cursor hide when visibility is off,
+  // as visibility on is expected to happen only on mouse events. But that
+  // is not true in webOS, where the event comes from a key event. So we
+  // need to make sure leave is resetting the hover status.
+  if (!show)
+    dispatcher()->OnHostLostMouseVisibility();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
