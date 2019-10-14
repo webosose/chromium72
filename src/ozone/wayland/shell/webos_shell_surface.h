@@ -78,7 +78,7 @@ class WebosShellSurface : public WLShellSurface {
   WebOSKeyMasks webos_group_key_masks_;
   bool minimized_;
   wl_webos_shell_surface* webos_shell_surface_;
-  gfx::LocationHint location_hint_;
+  gfx::LocationHint location_hint_ = gfx::LocationHint::kUnknown;
   DISALLOW_COPY_AND_ASSIGN(WebosShellSurface);
 };
 

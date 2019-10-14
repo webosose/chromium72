@@ -116,6 +116,8 @@ WebAppWindow::CreateParams ToWebAppWindowParams(
   result.show_state = ToUiWindowShowState(params.show_state);
   result.web_contents = static_cast<content::WebContents*>(params.web_contents);
   result.location_hint = ToGfxLocationHint(params.location_hint);
+
+  return result;
 }
 
 }  // namespace

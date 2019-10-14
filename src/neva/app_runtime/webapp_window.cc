@@ -377,6 +377,9 @@ void WebAppWindow::SetWindowProperty(const std::string& name,
 }
 
 void WebAppWindow::SetLocationHint(gfx::LocationHint value) {
+  if (!host_)
+    return;
+
   aura::WindowTreeHost* wth = host_->AsWindowTreeHost();
   DCHECK(wth) << "aura::WindowTreeHost is unavailable";
 
