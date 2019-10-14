@@ -40,4 +40,5 @@ interface AppRuntimeWebViewHost {
   DidFirstMeaningfulPaint();
   DidNonFirstMeaningfulPaint();
   DidClearWindowObject();
+  DidResumeDOM();
 };

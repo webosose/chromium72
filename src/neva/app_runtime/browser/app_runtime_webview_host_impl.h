@@ -46,6 +46,7 @@ class AppRuntimeWebViewHostImpl : public mojom::AppRuntimeWebViewHost {
   void DidFirstMeaningfulPaint() override;
   void DidNonFirstMeaningfulPaint() override;
   void DidClearWindowObject() override;
+  void DidResumeDOM() override;
 
  private:
   content::WebContentsFrameBindingSet<mojom::AppRuntimeWebViewHost> bindings_;

@@ -92,6 +92,7 @@ class BlinkView : public app_runtime::WebViewBase,
   void DidClearWindowObject() override;
   void DidSwapCompositorFrame() override;
   void DidDropAllPeerConnections(app_runtime::DropPeerConnectionReason reason);
+  void DidResumeDOM() override;
 
   // Additional methods for testing
   void SetMediaCapturePermission();

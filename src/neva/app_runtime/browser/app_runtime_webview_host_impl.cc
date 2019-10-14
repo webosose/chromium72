@@ -72,4 +72,9 @@ void AppRuntimeWebViewHostImpl::DidClearWindowObject() {
     webview_delegate_->DidClearWindowObject();
 }
 
+void AppRuntimeWebViewHostImpl::DidResumeDOM() {
+  if (webview_delegate_)
+    webview_delegate_->DidResumeDOM();
+}
+
 }  // namespace app_runtime
