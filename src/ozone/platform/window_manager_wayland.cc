@@ -418,12 +418,13 @@ void WindowManagerWayland::VirtualKeyNotify(EventType type,
                          device_id);
 }
 
-void WindowManagerWayland::TouchNotify(unsigned handle,
+void WindowManagerWayland::TouchNotify(uint32_t device_id,
+                                       unsigned handle,
                                        ui::EventType type,
                                        const ui::TouchEventInfo& event_info) {
   base::ThreadTaskRunnerHandle::Get()->PostTask(
       FROM_HERE, base::Bind(&WindowManagerWayland::NotifyTouchEvent,
-                            weak_ptr_factory_.GetWeakPtr(), handle,
+                            weak_ptr_factory_.GetWeakPtr(), device_id, handle,
                             type, event_info));
 }
 
@@ -681,7 +682,8 @@ void WindowManagerWayland::NotifyInputPanelLeave(uint32_t device_id) {
   UnGrabDeviceEvents(device_id);
 }
 
-void WindowManagerWayland::NotifyTouchEvent(unsigned handle,
+void WindowManagerWayland::NotifyTouchEvent(uint32_t device_id,
+                                            unsigned handle,
                                             ui::EventType type,
                                             const ui::TouchEventInfo& event_info) {
   gfx::Point position(event_info.x_, event_info.y_);
@@ -690,18 +692,18 @@ void WindowManagerWayland::NotifyTouchEvent(unsigned handle,
   uint32_t touch_slot = touch_slot_generator_.GetGeneratedID(event_info.touch_id_);
 
   if (type == ET_TOUCH_PRESSED)
-    GrabTouchButton(event_info.touch_id_, handle);
+    GrabTouchButton(device_id, handle);
 
   TouchEvent touchev(
       type, position, timestamp,
       ui::PointerDetails(ui::EventPointerType::POINTER_TYPE_TOUCH, touch_slot));
-  touchev.set_source_device_id(event_info.touch_id_);
+  touchev.set_source_device_id(device_id);
 
   DispatchEvent(&touchev);
 
   if (type == ET_TOUCH_RELEASED || type == ET_TOUCH_CANCELLED) {
-    if(type == ET_TOUCH_RELEASED)
-      UnGrabTouchButton(event_info.touch_id_);
+    if(type == ET_TOUCH_CANCELLED)
+      UnGrabTouchButton(device_id);
     touch_slot_generator_.ReleaseNumber(event_info.touch_id_);
   }
 }

@@ -16,7 +16,7 @@
 
 // Multiply-included message file, hence no include guard here.
 
-#include "ozone/platform/event_param_traints.h"
+#include "ozone/platform/event_param_traits.h"
 
 #include <stddef.h>
 #include <stdint.h>

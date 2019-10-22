@@ -27,7 +27,7 @@
 #include "ipc/ipc_param_traits.h"
 #include "ipc/neva/redefined_param_traits_macros.h"
 #include "ipc/param_traits_macros.h"
-#include "ozone/platform/event_param_traints.h"
+#include "ozone/platform/event_param_traits.h"
 #include "ozone/platform/input_content_type.h"
 #include "third_party/skia/include/core/SkBitmap.h"
 #include "ui/base/ime/neva/input_method_common.h"
@@ -91,7 +91,8 @@ IPC_MESSAGE_CONTROL5(WaylandInput_ButtonNotify,  // NOLINT(readability/fn_size)
                      float /*x*/,
                      float /*y*/)
 
-IPC_MESSAGE_CONTROL3(WaylandInput_TouchNotify,  // NOLINT(readability/fn_size)
+IPC_MESSAGE_CONTROL4(WaylandInput_TouchNotify,  // NOLINT(readability/fn_size)
+                     uint32_t /*device_id*/,
                      unsigned /*handle*/,
                      ui::EventType /*type*/,
                      ui::TouchEventInfo /*event_info*/)

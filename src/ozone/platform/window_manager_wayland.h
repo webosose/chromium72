@@ -25,7 +25,7 @@
 
 #include "base/memory/shared_memory.h"
 #include "base/memory/weak_ptr.h"
-#include "ozone/platform/event_param_traints.h"
+#include "ozone/platform/event_param_traits.h"
 #include "ui/base/cursor/cursor.h"
 #include "ui/events/devices/device_hotplug_event_observer.h"
 #include "ui/events/devices/input_device.h"
@@ -130,7 +130,8 @@ class WindowManagerWayland
   void VirtualKeyNotify(EventType type,
                         uint32_t key,
                         int device_id);
-  void TouchNotify(unsigned handle,
+  void TouchNotify(uint32_t device_id,
+                   unsigned handle,
                    ui::EventType type,
                    const ui::TouchEventInfo& event_info);
   void CloseWidget(unsigned handle);
@@ -191,7 +192,8 @@ class WindowManagerWayland
   void NotifyInputPanelEnter(uint32_t device_id,
                              unsigned handle);
   void NotifyInputPanelLeave(uint32_t device_id);
-  void NotifyTouchEvent(unsigned handle,
+  void NotifyTouchEvent(uint32_t device_id,
+                        unsigned handle,
                         ui::EventType type,
                         const ui::TouchEventInfo& event_info);
   void NotifyScreenChanged(unsigned width, unsigned height, int rotation);

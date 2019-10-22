@@ -1160,11 +1160,12 @@ void WaylandDisplay::VirtualKeyNotify(ui::EventType type,
   Dispatch(new WaylandInput_VirtualKeyNotify(type, key, device_id));
 }
 
-void WaylandDisplay::TouchNotify(unsigned handle,
+void WaylandDisplay::TouchNotify(uint32_t device_id,
+                                 unsigned handle,
                                  ui::EventType type,
                                  const ui::TouchEventInfo& event_info) {
 
-  Dispatch(new WaylandInput_TouchNotify(handle, type, event_info));
+  Dispatch(new WaylandInput_TouchNotify(device_id, handle, type, event_info));
 }
 
 void WaylandDisplay::OutputScreenChanged(unsigned width, unsigned height,

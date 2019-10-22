@@ -19,7 +19,7 @@
 
 #include <linux/input.h>
 
-#include "ozone/platform/event_param_traints.h"
+#include "ozone/platform/event_param_traits.h"
 #include "ozone/wayland/input/cursor.h"
 #include "ozone/wayland/seat.h"
 #include "ozone/wayland/window.h"
@@ -91,7 +91,8 @@ void WaylandTouchscreen::OnTouchDown(void *data,
 
   ui::TouchEventInfo event_info(sx, sy, id, time);
 
-  device->GetDispatcher()->TouchNotify(seat->GetEnteredWindowHandle(device_id),
+  device->GetDispatcher()->TouchNotify(device_id,
+                                       seat->GetEnteredWindowHandle(device_id),
                                        ui::ET_TOUCH_PRESSED,
                                        event_info);
 }
@@ -110,7 +111,8 @@ void WaylandTouchscreen::OnTouchUp(void *data,
   ui::TouchEventInfo event_info(device->pointer_position_.x(),
                                 device->pointer_position_.y(), id, time);
 
-  device->GetDispatcher()->TouchNotify(seat->GetEnteredWindowHandle(device_id),
+  device->GetDispatcher()->TouchNotify(device_id,
+                                       seat->GetEnteredWindowHandle(device_id),
                                        ui::ET_TOUCH_RELEASED,
                                        event_info);
 
@@ -143,7 +145,8 @@ void WaylandTouchscreen::OnTouchMotion(void *data,
 
   ui::TouchEventInfo event_info(sx, sy, id, time);
 
-  device->GetDispatcher()->TouchNotify(seat->GetEnteredWindowHandle(device_id),
+  device->GetDispatcher()->TouchNotify(device_id,
+                                       seat->GetEnteredWindowHandle(device_id),
                                        ui::ET_TOUCH_MOVED, event_info);
 }
 
@@ -163,7 +166,8 @@ void WaylandTouchscreen::OnTouchCancel(void *data,
                                 device->pointer_position_.y(),
                                 seat->GetGrabButton(device_id), 0);
 
-  device->GetDispatcher()->TouchNotify(seat->GetEnteredWindowHandle(device_id),
+  device->GetDispatcher()->TouchNotify(device_id,
+                                       seat->GetEnteredWindowHandle(device_id),
                                        ui::ET_TOUCH_CANCELLED, event_info);
 
   if (seat->GetGrabWindowHandle(device_id) &&
