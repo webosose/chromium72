@@ -58,7 +58,7 @@ IPC_ENUM_TRAITS_MAX_VALUE(ui::KeyMask,
                           ui::KeyMask::kDefault)
 IPC_ENUM_TRAITS_MAX_VALUE(ui::XInputKeySymbolType, ui::XINPUT_NATIVE_KEY_SYMBOL)
 IPC_ENUM_TRAITS_MAX_VALUE(ui::XInputEventType, ui::XINPUT_RELEASE)
-IPC_ENUM_TRAITS_MAX_VALUE(gfx::LocationHint, gfx::LocationHint::kCenter)
+IPC_ENUM_TRAITS_MAX_VALUE(gfx::LocationHint, gfx::LocationHint::kSouthEast)
 
 //------------------------------------------------------------------------------
 // Browser Messages
