@@ -36,6 +36,7 @@
 #include "storage/browser/quota/special_storage_policy.h"
 #include "third_party/leveldatabase/env_chromium.h"
 #include "third_party/leveldatabase/leveldb_chrome.h"
+#include "url/url_util.h"
 
 namespace content {
 
@@ -73,6 +74,10 @@ const size_t kMaxLocalStorageCacheSize = 2 * 1024 * 1024;
 #else
 const unsigned kMaxLocalStorageAreaCount = 50;
 const size_t kMaxLocalStorageCacheSize = 20 * 1024 * 1024;
+
+#if defined(ENABLE_LOCAL_STORAGE_LIMIT_FOR_SECOND_LEVEL_DOMAIN)
+const size_t kLimitLocalStorageIndexedDBSizePerOrigin = 10 * 1024 * 1024;
+#endif
 #endif
 
 static const uint8_t kUTF16Format = 0;
@@ -350,6 +355,41 @@ class LocalStorageContextMojo::StorageAreaHolder final
 
   bool has_bindings() const { return has_bindings_; }
 
+#if defined(ENABLE_LOCAL_STORAGE_LIMIT_FOR_SECOND_LEVEL_DOMAIN)
+  void OnGotMetaDataForOrigin(GetStorageUsageCallback callback,
+                              leveldb::mojom::DatabaseError status,
+                              std::vector<leveldb::mojom::KeyValuePtr> data) {
+    std::vector<StorageUsageInfo> result;
+    size_t total_size = 0;
+    for (const auto& row : data) {
+      DCHECK_GT(row->key.size(), arraysize(kMetaPrefix));
+      GURL origin_url(leveldb::Uint8VectorToStdString(row->key).substr(
+          arraysize(kMetaPrefix)));
+      if (!origin_url.is_valid())
+        continue;
+      if (!DoesHaveSameTLD1Domain(url::Origin::Create(origin_url)))
+        continue;
+      LocalStorageOriginMetaData row_data;
+      if (!row_data.ParseFromArray(row->value.data(), row->value.size()))
+        continue;
+      result.emplace_back(
+          origin_url, row_data.size_bytes(),
+          base::Time::FromInternalValue(row_data.last_modified()));
+
+      total_size += row_data.size_bytes();
+    }
+
+    if (total_size > kLimitLocalStorageIndexedDBSizePerOrigin)
+      std::move(callback).Run(std::move(result));
+  }
+
+  void PurgeStorageUsageForOriginIfNeeded(std::vector<StorageUsageInfo> usage) {
+    for (const auto& info : usage)
+      context_->DeleteStorage(url::Origin::Create(info.origin),
+                              base::DoNothing());
+  }
+#endif
+
  private:
   base::FilePath sql_db_path() const {
     if (context_->old_localstorage_path_.empty())
@@ -357,6 +397,36 @@ class LocalStorageContextMojo::StorageAreaHolder final
     return context_->old_localstorage_path_.Append(
         DOMStorageArea::DatabaseFileNameFromOrigin(origin_));
   }
+
+#if defined(ENABLE_LOCAL_STORAGE_LIMIT_FOR_SECOND_LEVEL_DOMAIN)
+  bool DoesHaveSameTLD1Domain(url::Origin origin) {
+    if (origin == origin_)
+      return false;
+
+    if (origin.scheme() != origin_.scheme())
+      return false;
+
+    base::StringPiece tld1_domain = GetTLD1DomainFromOrigin(origin_);
+    if (tld1_domain.empty())
+      return false;
+    if (tld1_domain == GetTLD1DomainFromOrigin(origin))
+      return true;
+  }
+
+  base::StringPiece GetTLD1DomainFromOrigin(const url::Origin& origin) {
+    base::StringPiece host = origin.host();
+    if (url::HostIsIPAddress(host))
+      return base::StringPiece();
+    base::StringPiece tld1_host = host.substr(host.find('.') + 1);
+    if (tld1_host.length() >= host.length())
+      return base::StringPiece();
+
+    if (tld1_host.find('.') == base::StringPiece::npos)
+      return base::StringPiece();
+
+    return tld1_host;
+  }
+#endif
 
   LocalStorageContextMojo* context_;
   url::Origin origin_;
@@ -931,6 +1001,14 @@ LocalStorageContextMojo::GetOrCreateStorageArea(const url::Origin& origin) {
   auto holder = std::make_unique<StorageAreaHolder>(this, origin);
   StorageAreaHolder* holder_ptr = holder.get();
   areas_[origin] = std::move(holder);
+
+#if defined(ENABLE_LOCAL_STORAGE_LIMIT_FOR_SECOND_LEVEL_DOMAIN)
+  RetrieveStorageUsageForOrigin(
+      base::BindOnce(&LocalStorageContextMojo::StorageAreaHolder::
+                         PurgeStorageUsageForOriginIfNeeded,
+                     base::Unretained(holder_ptr)),
+      origin);
+#endif
   return holder_ptr;
 }
 
@@ -952,6 +1030,21 @@ void LocalStorageContextMojo::RetrieveStorageUsage(
       base::BindOnce(&LocalStorageContextMojo::OnGotMetaData,
                      weak_ptr_factory_.GetWeakPtr(), std::move(callback)));
 }
+
+#if defined(ENABLE_LOCAL_STORAGE_LIMIT_FOR_SECOND_LEVEL_DOMAIN)
+void LocalStorageContextMojo::RetrieveStorageUsageForOrigin(
+    GetStorageUsageCallback callback,
+    url::Origin origin) {
+  if (!database_)
+    return;
+
+  database_->GetPrefixed(
+      std::vector<uint8_t>(kMetaPrefix, kMetaPrefix + arraysize(kMetaPrefix)),
+      base::BindOnce(
+          &LocalStorageContextMojo::StorageAreaHolder::OnGotMetaDataForOrigin,
+          base::Unretained(areas_[origin].get()), std::move(callback)));
+}
+#endif
 
 void LocalStorageContextMojo::OnGotMetaData(
     GetStorageUsageCallback callback,
