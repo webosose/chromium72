@@ -150,6 +150,7 @@ void WaylandTextInput::DeactivateTextModel() {
     text_model_destroy(text_model_);
     text_model_ = nullptr;
     activated_ = false;
+    state_ = InputPanelUnknownState;
   }
 }
 
@@ -178,8 +179,13 @@ void WaylandTextInput::ShowInputPanel(wl_seat* input_seat, unsigned handle) {
     active_window = last_active_window_;
 
   if (active_window) {
-    activated_ ? text_model_show_input_panel(text_model_)
-               : ActivateTextModel(active_window);
+    if (activated_) {
+      if (state_ != InputPanelShown)
+        text_model_show_input_panel(text_model_);
+    } else {
+      ActivateTextModel(active_window);
+    }
+
     text_model_set_content_type(
         text_model_,
         ContentHintFromInputContentType(input_content_type_, text_input_flags_),
