@@ -177,7 +177,8 @@ void ExternalRenderer::StartPlayingFrom(base::TimeDelta timestamp) {
   // TODO(neva): We need to put StartSink to right place because
   // StartPlayingFrom is not video playing but prepareing some frames
   StartSink();
-  video_decoder_stream_->SkipPrepareUntil(start_timestamp_);
+  if (video_decoder_stream_)
+    video_decoder_stream_->SkipPrepareUntil(start_timestamp_);
   AttemptRead();
 }
 
