@@ -300,12 +300,6 @@ void WebViewBase::SuspendWebPageDOM() {
   webview_->SuspendDOM();
 }
 
-void WebViewBase::ReplaceBaseURL(const std::string& new_url,
-                                 const std::string& old_url) {
-  if (new_url != old_url)
-    webview_->ReplaceBaseURL(GURL(new_url));
-}
-
 void WebViewBase::ResumeWebPageDOM() {
   webview_->ResumeDOM();
 }
@@ -659,9 +653,9 @@ void WebViewBase::SetAudioGuidanceOn(bool on) {
   NOTIMPLEMENTED();
 }
 
-void WebViewBase::ResetStateToMarkNextPaintForContainer() {
+void WebViewBase::ResetStateToMarkNextPaint() {
   load_visually_committed_called_ = false;
-  webview_->ResetStateToMarkNextPaintForContainer();
+  webview_->ResetStateToMarkNextPaint();
 }
 
 void WebViewBase::SetAppPath(const std::string& app_path) {

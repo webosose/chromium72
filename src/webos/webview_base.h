@@ -101,7 +101,6 @@ class WEBOS_EXPORT WebViewBase
   void StopLoading();
   void LoadExtension(const std::string& name);
   void ClearExtensions();
-  void ReplaceBaseURL(const std::string& new_url, const std::string& old_url);
   void EnableInspectablePage();
   void SetInspectable(bool enable);
   void AddAvailablePluginDir(const std::string& directory);
@@ -169,7 +168,7 @@ class WEBOS_EXPORT WebViewBase
   void SetUseEnyoOptimization(bool enabled);
   void SetAppPreloadHint(bool is_preload);
   void SetTransparentBackground(bool enabled);
-  void ResetStateToMarkNextPaintForContainer();
+  void ResetStateToMarkNextPaint();
 
   // RenderPreference
   void SetAllowFakeBoldText(bool allow);

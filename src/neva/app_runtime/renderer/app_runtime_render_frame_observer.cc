@@ -87,8 +87,8 @@ void AppRuntimeRenderFrameObserver::ResumeDOM() {
     interface->DidResumeDOM();
 }
 
-void AppRuntimeRenderFrameObserver::ResetStateToMarkNextPaintForContainer() {
-  render_frame()->ResetStateToMarkNextPaintForContainer();
+void AppRuntimeRenderFrameObserver::ResetStateToMarkNextPaint() {
+  render_frame()->ResetStateToMarkNextPaint();
 }
 
 void AppRuntimeRenderFrameObserver::SetVisibilityState(

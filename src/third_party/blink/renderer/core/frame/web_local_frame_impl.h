@@ -265,8 +265,7 @@ class CORE_EXPORT WebLocalFrameImpl final
   void SendPings(const WebURL& destination_url) override;
 
 #if defined(USE_NEVA_APPRUNTIME)
-  void ReplaceBaseURL(const WebString& url) const override;
-  void ResetStateToMarkNextPaintForContainer() override;
+  void ResetStateToMarkNextPaint() override;
 #endif
 #if defined(USE_NEVA_MEDIA)
   void SetSuppressMediaPlay(bool suppress) override;

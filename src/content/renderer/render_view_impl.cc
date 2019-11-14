@@ -1385,7 +1385,6 @@ bool RenderViewImpl::OnMessageReceived(const IPC::Message& message) {
     // Adding a new message? Add platform independent ones first, then put the
     // platform specific ones at the end.
 #if defined(USE_NEVA_APPRUNTIME)
-    IPC_MESSAGE_HANDLER(ViewMsg_ReplaceBaseURL, OnReplaceBaseURL)
     IPC_MESSAGE_HANDLER(ViewMsg_DropAllPeerConnections,
                         OnDropAllPeerConnections)
     IPC_MESSAGE_HANDLER(ViewMsg_SetAppPreloadHint, OnSetAppPreloadHint)
@@ -2352,13 +2351,6 @@ void RenderViewImpl::SetKeepAliveWebApp(bool keepAlive) {
   webkit_preferences_.keep_alive_webapp = keepAlive;
   if (webview() && webview()->GetSettings())
     webview()->GetSettings()->SetKeepAliveWebApp(keepAlive);
-}
-
-void RenderViewImpl::OnReplaceBaseURL(const GURL& newUrl) {
-  if (!webview())
-    return;
-
-  webview()->ReplaceBaseURL(WebURL(newUrl));
 }
 
 void RenderViewImpl::OnDropAllPeerConnections(DropPeerConnectionReason reason) {

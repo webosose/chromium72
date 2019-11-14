@@ -102,7 +102,7 @@ void AppRuntimePageLoadTimingRenderFrameObserver::
 }
 
 void AppRuntimePageLoadTimingRenderFrameObserver::
-    DidResetStateToMarkNextPaintForContainer() {
+    DidResetStateToMarkNextPaint() {
   loading_end_ = base::nullopt;
   first_paint_ = base::nullopt;
   first_contentful_paint_ = base::nullopt;

@@ -45,7 +45,7 @@ class AppRuntimeRenderFrameObserver : public content::RenderFrameObserver,
   void SetBackgroundColor(int32_t r, int32_t g, int32_t b, int32_t a) override;
   void SuspendDOM() override;
   void ResumeDOM() override;
-  void ResetStateToMarkNextPaintForContainer() override;
+  void ResetStateToMarkNextPaint() override;
   void SetVisibilityState(blink::mojom::PageVisibilityState visibility_state) override;
   void ChangeLocale(const std::string& locale) override;
   void SetNetworkQuietTimeout(double timeout) override;

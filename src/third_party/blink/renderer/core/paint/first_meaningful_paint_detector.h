@@ -43,7 +43,7 @@ class CORE_EXPORT FirstMeaningfulPaintDetector
   void NotifyFirstContentfulPaint(TimeTicks swap_stamp);
 
 #if defined(USE_NEVA_APPRUNTIME)
-  void ResetStateToMarkNextPaintForContainer();
+  void ResetStateToMarkNextPaint();
 #endif
 
   void OnNetwork0Quiet();

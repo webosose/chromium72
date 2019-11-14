@@ -743,14 +743,6 @@ void WebViewImpl::AcceptLanguagesChanged() {
   GetPage()->AcceptLanguagesChanged();
 }
 
-#if defined(USE_NEVA_APPRUNTIME)
-void WebViewImpl::ReplaceBaseURL(const WebURL& newUrl) {
-  for (WebFrame* coreFrame =  WebViewImpl::MainFrame();
-      coreFrame; coreFrame = coreFrame->TraverseNext())
-    coreFrame->ReplaceBaseURL(newUrl.GetString());
-}
-#endif
-
 void WebViewImpl::PausePageScheduledTasks(bool paused) {
   GetPage()->SetPaused(paused);
 }

@@ -999,10 +999,6 @@ void RenderViewHostImpl::ClosePageTimeout() {
 }
 
 #if defined(USE_NEVA_APPRUNTIME)
-void RenderViewHostImpl::ReplaceBaseURL(const GURL& newUrl) {
-  Send(new ViewMsg_ReplaceBaseURL(GetRoutingID(), newUrl));
-}
-
 void RenderViewHostImpl::SetAppPreloadHint(bool is_preload) {
   Send(new ViewMsg_SetAppPreloadHint(GetRoutingID(), is_preload));
 }

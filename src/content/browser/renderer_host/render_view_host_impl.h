@@ -108,7 +108,6 @@ class CONTENT_EXPORT RenderViewHostImpl : public RenderViewHost,
   void UpdateWebkitPreferences(const WebPreferences& prefs) override;
   void OnWebkitPreferencesChanged() override;
 #if defined(USE_NEVA_APPRUNTIME)
-  void ReplaceBaseURL(const GURL& newUrl) override;
   void DropAllPeerConnections(DropPeerConnectionReason reason) override;
   void SetAppPreloadHint(bool is_preload) override;
 #endif

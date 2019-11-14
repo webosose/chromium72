@@ -219,9 +219,6 @@ IPC_MESSAGE_ROUTED1(ViewMsg_PpapiBrokerPermissionResult,
 #endif
 
 #if defined(USE_NEVA_APPRUNTIME)
-// Sent by WAM to replace url for all frames of the page usually of
-// container application
-IPC_MESSAGE_ROUTED1(ViewMsg_ReplaceBaseURL, GURL)
 // Sent by WAM to drop all webRTC communications when application
 // goes background.
 IPC_MESSAGE_ROUTED1(ViewMsg_DropAllPeerConnections,

@@ -5280,12 +5280,12 @@ bool RenderFrameImpl::DecidePolicyForResponse(
   return hasPolicy;
 }
 
-void RenderFrameImpl::ResetStateToMarkNextPaintForContainer() {
+void RenderFrameImpl::ResetStateToMarkNextPaint() {
   for (auto& observer : observers_)
-    observer.DidResetStateToMarkNextPaintForContainer();
+    observer.DidResetStateToMarkNextPaint();
 
   if (IsMainFrame() && GetWebFrame())
-    GetWebFrame()->ResetStateToMarkNextPaintForContainer();
+    GetWebFrame()->ResetStateToMarkNextPaint();
 }
 
 void RenderFrameImpl::DidNonFirstMeaningPaintAfterLoad() {

@@ -127,7 +127,7 @@ class CONTENT_EXPORT RenderFrameObserver : public IPC::Listener,
 #if defined(USE_NEVA_APPRUNTIME)
   // Called when First Meaningful Paint is not detected until resource loaded.
   virtual void DidNonFirstMeaningPaintAfterLoad() {}
-  virtual void DidResetStateToMarkNextPaintForContainer() {}
+  virtual void DidResetStateToMarkNextPaint() {}
 #endif
 
   // Notification when the renderer uses a particular code path during a page

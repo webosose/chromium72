@@ -182,10 +182,6 @@ void WebView::ClearExtensions() {
   RequestClearInjections();
 }
 
-void WebView::ReplaceBaseURL(const GURL& newUrl) {
-  web_contents_->ReplaceBaseURL(newUrl);
-}
-
 const std::string& WebView::GetUrl() {
   return web_contents_->GetVisibleURL().spec();
 }
@@ -950,12 +946,12 @@ void WebView::RequestClearInjections() {
 }
 
 
-void WebView::ResetStateToMarkNextPaintForContainer() {
+void WebView::ResetStateToMarkNextPaint() {
   content::RenderViewHost* rvh = web_contents_->GetRenderViewHost();
   if (rvh) {
     mojom::AppRuntimeWebViewClientAssociatedPtr client;
     rvh->GetMainFrame()->GetRemoteAssociatedInterfaces()->GetInterface(&client);
-    client->ResetStateToMarkNextPaintForContainer();
+    client->ResetStateToMarkNextPaint();
   }
 }
 

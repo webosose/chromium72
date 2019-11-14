@@ -412,10 +412,6 @@ class WebView {
   // context's ability to deal with that failure gracefully can be tested.
   virtual void ForceNextDrawingBufferCreationToFail() = 0;
 
-#if defined(USE_NEVA_APPRUNTIME)
-  virtual void ReplaceBaseURL(const WebURL& newURL) = 0;
-#endif
-
   // Autoplay configuration -----------------------------------------------
 
   // Sets the autoplay flags for this webview's page.

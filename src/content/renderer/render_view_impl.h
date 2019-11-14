@@ -471,7 +471,6 @@ class CONTENT_EXPORT RenderViewImpl : private RenderWidget,
                         const blink::WebPluginAction& action);
   void OnMoveOrResizeStarted();
 #if defined(USE_NEVA_APPRUNTIME)
-  void OnReplaceBaseURL(const GURL& newurl);
   void OnDropAllPeerConnections(DropPeerConnectionReason reason);
   void OnSetAppPreloadHint(bool blocked);
 #endif

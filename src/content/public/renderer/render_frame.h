@@ -288,7 +288,7 @@ class CONTENT_EXPORT RenderFrame : public IPC::Listener,
   GetURLLoaderFactory() = 0;
 
 #if defined(USE_NEVA_APPRUNTIME)
-  virtual void ResetStateToMarkNextPaintForContainer() {};
+  virtual void ResetStateToMarkNextPaint() {};
 #endif
 
  protected:

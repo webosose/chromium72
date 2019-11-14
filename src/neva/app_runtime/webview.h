@@ -95,7 +95,6 @@ class WebView : public content::WebContentsDelegate,
   void StopLoading();
   void LoadExtension(const std::string& name);
   void ClearExtensions();
-  void ReplaceBaseURL(const GURL& new_url);
   const std::string& GetUrl();
 
   void SuspendDOM();
@@ -171,7 +170,7 @@ class WebView : public content::WebContentsDelegate,
   void RequestInjectionLoading(const std::string& injection_name);
   void RequestClearInjections();
   bool IsKeyboardVisible() const;
-  void ResetStateToMarkNextPaintForContainer();
+  void ResetStateToMarkNextPaint();
   void DropAllPeerConnections(DropPeerConnectionReason reason);
   void SetV8SnapshotPath(const std::string& v8_snapshot_path);
   void SetV8ExtraFlags(const std::string& v8_extra_flags);

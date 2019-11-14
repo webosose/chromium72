@@ -6855,10 +6855,6 @@ void WebContentsImpl::RenderProcessCreated(
     observer.RenderProcessCreated(render_process_host->GetProcess().Handle());
 }
 
-void WebContentsImpl::ReplaceBaseURL(const GURL& newURL) {
-  GetRenderViewHost()->ReplaceBaseURL(newURL);
-}
-
 void WebContentsImpl::DropAllPeerConnections(DropPeerConnectionReason reason) {
   GetRenderViewHost()->DropAllPeerConnections(reason);
 }

@@ -2026,22 +2026,12 @@ void WebLocalFrameImpl::SendPings(const WebURL& destination_url) {
 }
 
 #if defined(USE_NEVA_APPRUNTIME)
-void WebLocalFrameImpl::ReplaceBaseURL(const WebString& url) const {
-  if (!GetFrame())
-    return;
-
-  GetFrame()->Loader().UpdateForSameDocumentNavigation(
-      KURL(KURL(), url), kSameDocumentNavigationHistoryApi, nullptr,
-      kScrollRestorationAuto, WebFrameLoadType::kReplaceCurrentItem,
-      GetFrame()->GetDocument());
-}
-
-void WebLocalFrameImpl::ResetStateToMarkNextPaintForContainer() {
+void WebLocalFrameImpl::ResetStateToMarkNextPaint() {
   if (!GetFrame())
     return;
 
   FirstMeaningfulPaintDetector::From(*(GetFrame()->GetDocument())).
-      ResetStateToMarkNextPaintForContainer();
+      ResetStateToMarkNextPaint();
 }
 #endif
 

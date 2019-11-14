@@ -663,7 +663,7 @@ class CONTENT_EXPORT RenderFrameImpl
 #if defined(USE_NEVA_APPRUNTIME)
   bool DecidePolicyForResponse(const blink::WebURLResponse& response) override;
   // content::RenderFrame
-  void ResetStateToMarkNextPaintForContainer() override;
+  void ResetStateToMarkNextPaint() override;
   // blink::WebFrameClient
   void DidNonFirstMeaningPaintAfterLoad() override;
 #endif
