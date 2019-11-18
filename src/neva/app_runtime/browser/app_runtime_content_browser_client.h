@@ -117,8 +117,12 @@ class AppRuntimeContentBrowserClient : public content::ContentBrowserClient {
   void SetV8ExtraFlags(int child_process_id, const std::string& flags);
   void SetUseNativeScroll(int child_process_id, bool use_native_scroll);
 
+  void PushCORBDisabledToIOThread(int process_id, bool disabled);
+
  private:
   class MainURLRequestContextGetter;
+
+  void SetCORBDisabledOnIOThread(int process_id, bool disabled);
 
   AppRuntimeBrowserMainExtraParts* browser_extra_parts_ = nullptr;
   std::unique_ptr<URLRequestContextFactory> url_request_context_factory_;

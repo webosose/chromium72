@@ -40,6 +40,7 @@
 #include "neva/app_runtime/webview.h"
 #include "neva/pal_service/pal_service_factory.h"
 #include "neva/pal_service/public/mojom/constants.mojom.h"
+#include "services/network/cross_origin_read_blocking.h"
 #include "services/service_manager/sandbox/switches.h"
 
 #if defined(USE_NEVA_EXTENSIONS)
@@ -447,4 +448,22 @@ void AppRuntimeContentBrowserClient::LoadExtensions(
   LoadAppsFromCommandLine(extension_system, browser_context);
 }
 #endif
+
+void AppRuntimeContentBrowserClient::PushCORBDisabledToIOThread(int process_id,
+                                                                bool disabled) {
+  base::PostTaskWithTraits(
+      FROM_HERE, {content::BrowserThread::IO},
+      base::BindOnce(&AppRuntimeContentBrowserClient::SetCORBDisabledOnIOThread,
+                     base::Unretained(this), process_id, disabled));
+}
+
+void AppRuntimeContentBrowserClient::SetCORBDisabledOnIOThread(int process_id,
+                                                               bool disabled) {
+  if (disabled) {
+    network::CrossOriginReadBlocking::AddExceptionForProcess(process_id);
+  } else {
+    network::CrossOriginReadBlocking::RemoveExceptionForProcess(process_id);
+  }
+}
+
 }  // namespace app_runtime

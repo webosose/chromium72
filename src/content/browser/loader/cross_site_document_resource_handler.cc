@@ -619,6 +619,13 @@ bool CrossSiteDocumentResourceHandler::ShouldBlockBasedOnHeaders(
     return false;
   }
 
+#if defined(USE_NEVA_APPRUNTIME)
+  if (network::CrossOriginReadBlocking::ShouldAllowForProcess(
+          info->GetChildID())) {
+    return false;
+  }
+#endif
+
   return true;
 }
 
