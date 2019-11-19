@@ -2655,6 +2655,9 @@ void WebMediaPlayerImpl::UpdatePlayState() {
 #if defined(OS_ANDROID)  // WMPI_CAST
   bool is_remote = IsRemote();
   bool can_auto_suspend = true;
+#elif defined(USE_NEVA_MEDIA)
+  bool is_remote = false;
+  bool can_auto_suspend = false;
 #else
   bool is_remote = false;
   bool can_auto_suspend = !disable_pipeline_auto_suspend_;
