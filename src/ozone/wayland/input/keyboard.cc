@@ -111,6 +111,8 @@ void WaylandKeyboard::OnKeyboardEnter(void* data,
     static_cast<WaylandWindow*>(wl_surface_get_user_data(surface));
   if (window) {
     seat->SetEnteredWindowHandle(device_id, window->Handle());
+    seat->SetActiveInputWindow(window->GetDisplayId(),
+                               window->Handle());
     device->GetDispatcher()->KeyboardEnter(window->Handle());
   }
 }
