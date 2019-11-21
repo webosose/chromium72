@@ -35,7 +35,7 @@ class WebOSSurfaceGroupLayer : public wl_webos_surface_group_layer {
 
  private:
   std::string layer_name_;
-  int layer_z_order_;
+  int layer_z_order_ = 0;
 
   DISALLOW_COPY_AND_ASSIGN(WebOSSurfaceGroupLayer);
 };
