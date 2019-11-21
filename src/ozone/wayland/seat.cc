@@ -127,6 +127,28 @@ void WaylandSeat::OnSeatCapabilities(void *data, wl_seat *seat, uint32_t caps) {
   }
 }
 
+void WaylandSeat::SetEnteredWindowHandle(uint32_t device_id, unsigned windowhandle) {
+  entered_window_handle_map_[device_id] = windowhandle;
+}
+
+unsigned WaylandSeat::GetEnteredWindowHandle(uint32_t device_id) const {
+  if (entered_window_handle_map_.find(device_id) != entered_window_handle_map_.end()) {
+    return entered_window_handle_map_.at(device_id);
+  }
+  return 0;
+}
+
+void WaylandSeat::SetActiveInputWindow(unsigned windowhandle) {
+  active_input_window_handle_ = windowhandle;
+  WaylandWindow* window = nullptr;
+  if (windowhandle) {
+    window = WaylandDisplay::GetInstance()->GetWindow(windowhandle);
+    if (!window)
+      return;
+  }
+  text_input_->SetActiveWindow(window);
+}
+
 void WaylandSeat::OnName(void* data, wl_seat* seat, const char* name) {
   WaylandSeat* device = static_cast<WaylandSeat*>(data);
   device->name_ = name;
@@ -154,37 +176,6 @@ void WaylandSeat::OnName(void* data, wl_seat* seat, const char* name) {
     display->TouchscreenAdded(device->input_touch_->GetId(),
                               device->input_touch_->GetName());
   }
-}
-
-void WaylandSeat::SetEnteredWindowHandle(uint32_t device_id, unsigned windowhandle) {
-  entered_window_handle_map_[device_id] = windowhandle;
-}
-
-unsigned WaylandSeat::GetEnteredWindowHandle(uint32_t device_id) const {
-  if (entered_window_handle_map_.find(device_id) != entered_window_handle_map_.end()) {
-    return entered_window_handle_map_.at(device_id);
-  }
-  return 0;
-}
-
-void WaylandSeat::SetActiveInputWindow(const std::string& display_id,
-                                       unsigned windowhandle) {
-  WaylandWindow* window = nullptr;
-  if (windowhandle) {
-    window = WaylandDisplay::GetInstance()->GetWindow(windowhandle);
-    if (!window)
-      return;
-  }
-  text_input_->SetActiveWindow(display_id, window);
-}
-
-unsigned WaylandSeat::GetActiveInputWindow(
-    const std::string& display_id) const {
-  WaylandWindow* window = text_input_->GetActiveWindow(display_id);
-  if (window)
-    return window->Handle();
-  else
-    return 0;
 }
 
 void WaylandSeat::ResetEnteredWindowHandle(unsigned window_handle) {
@@ -259,9 +250,8 @@ void WaylandSeat::ShowInputPanel(unsigned handle) {
   text_input_->ShowInputPanel(seat_, handle);
 }
 
-void WaylandSeat::HideInputPanel(ui::ImeHiddenType hidden_type,
-                                 const std::string& display_id) {
-  text_input_->HideInputPanel(seat_, display_id, hidden_type);
+void WaylandSeat::HideInputPanel(unsigned handle, ui::ImeHiddenType hidden_type) {
+  text_input_->HideInputPanel(seat_, handle, hidden_type);
 }
 
 void WaylandSeat::SetInputContentType(ui::InputContentType content_type,
