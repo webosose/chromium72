@@ -43,7 +43,7 @@ void WebOSNetworkErrorHelper::DidCommitProvisionalLoad(
 
 void WebOSNetworkErrorHelper::OnDestruct() {
 #if defined(ENABLE_NETWORK_ERROR_PAGE_CONTROLLER_WEBAPI)
-  if (error_page_controller_binding_)
+  if (render_frame() && error_page_controller_binding_)
     injections::NetworkErrorPageControllerInjection::Uninstall(render_frame());
 #endif
 
