@@ -308,6 +308,11 @@ void MediaPlayerUMS::SetDisableAudio(bool disable) {
   umedia_client_->SetDisableAudio(disable);
 }
 
+Ranges<base::TimeDelta> MediaPlayerUMS::GetBufferedTimeRanges() const {
+  DCHECK(main_task_runner_->BelongsToCurrentThread());
+  return umedia_client_->GetBufferedTimeRanges();
+}
+
 void MediaPlayerUMS::OnPlaybackStateChanged(bool playing) {
   FUNC_LOG(1);
   if (playing)
