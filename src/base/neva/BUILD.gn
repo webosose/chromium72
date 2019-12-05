@@ -20,6 +20,8 @@ static_library("neva") {
   sources = [
     "base_switches.cc",
     "base_switches.h",
+    "neva_paths.cc",
+    "neva_paths.h",
   ]
 
   deps = []
