@@ -3007,8 +3007,13 @@ void LayerTreeHostImpl::ActivateStateForImages() {
 
 void LayerTreeHostImpl::OnMemoryPressure(
     base::MemoryPressureListener::MemoryPressureLevel level) {
+#if defined(OS_WEBOS)
+  if (level == base::MemoryPressureListener::MEMORY_PRESSURE_LEVEL_NONE) {
+    UpdateTileManagerMemoryPolicy(ActualManagedMemoryPolicy());
+    return;
+  }
+#else
   // Only work for low-end devices for now.
-#if !defined(OS_WEBOS)
   if (!base::SysInfo::IsLowEndDevice())
     return;
 

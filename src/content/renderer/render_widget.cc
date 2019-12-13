@@ -2926,9 +2926,6 @@ cc::LayerTreeSettings RenderWidget::GenerateLayerTreeSettings(
           budget_bytes_mb * 1024 * 1024;
   }
 #endif
-#if defined(OS_WEBOS)
-  settings.max_memory_for_prepaint_percentage = 0;
-#endif
 
   if (using_low_memory_policy) {
     // RGBA_4444 textures are only enabled:
