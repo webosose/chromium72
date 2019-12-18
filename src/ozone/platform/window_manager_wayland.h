@@ -213,6 +213,7 @@ class WindowManagerWayland
   void NotifyDragLeave(unsigned windowhandle);
   void NotifyDragMotion(unsigned windowhandle, float x, float y, uint32_t time);
   void NotifyDragDrop(unsigned windowhandle);
+  void OnVirtualKeyNotify(EventType type, uint32_t key, int device_id);
   ///@name USE_NEVA_APPRUNTIME
   ///@{
   void InputPanelVisibilityChanged(unsigned windowhandle, bool visibility);
