@@ -331,6 +331,7 @@ class CONTENT_EXPORT RenderWidgetHostViewAura
   bool IsKeepAliveWebApp() const;
   gfx::Size GetCompositorViewportPixelSize() const override;
   gfx::Rect GetTextInputBounds() const override;
+  int GetTextInputMaxLength() const override;
 #endif
 
   // RenderWidgetHostViewEventHandler::Delegate:
