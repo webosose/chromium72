@@ -234,12 +234,12 @@ void WaylandTextInput::InputPanel::SetHiddenState() {
 
 void WaylandTextInput::InputPanel::Activate() {
   WaylandWindow* window = nullptr;
-  if (associative_window_handle) {
+  if (associative_window_handle)
     window =
         WaylandDisplay::GetInstance()->GetWindow(associative_window_handle);
-    if (!window)
-      return;
-  }
+
+  if (!window)
+    return;
 
   if (model)
     text_model_activate(model, serial, seat->GetWLSeat(),

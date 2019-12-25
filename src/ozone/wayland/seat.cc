@@ -46,7 +46,8 @@ namespace ozonewayland {
 
 WaylandSeat::WaylandSeat(WaylandDisplay* display,
                          uint32_t id)
-    : seat_(NULL),
+    : active_input_window_handle_(0),
+      seat_(NULL),
 #if defined(USE_DATA_DEVICE_MANAGER)
       data_device_(NULL),
 #endif
