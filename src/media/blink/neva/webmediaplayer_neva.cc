@@ -638,7 +638,7 @@ blink::WebTimeRanges WebMediaPlayerNeva::Buffered() const {
   DCHECK(main_task_runner_->BelongsToCurrentThread());
 
   if (!player_api_)
-    blink::WebTimeRanges();
+    return blink::WebTimeRanges();
 
   Ranges<base::TimeDelta> ranges = player_api_->GetBufferedTimeRanges();
 
